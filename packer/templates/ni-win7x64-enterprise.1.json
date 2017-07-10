@@ -1,0 +1,86 @@
+{
+  "builders": [
+    {
+      "communicator": "winrm",
+      "cpu": 2,
+      "disk_size": "{{user `disk_size`}}",
+      "floppy_files": [
+        "floppy/00-run-all-scripts.cmd",
+        "floppy/01-restart.cmd",
+        "floppy/_packer_config.cmd",
+        "floppy/hotfix-KB3102810.bat",
+        "floppy/hotfix-KB3063109.bat",
+        "floppy/_post_update_install.bat",
+        "floppy/disablewinupdate.bat",
+        "floppy/fixnetwork.ps1",
+        "floppy/install-winrm.cmd",
+        "floppy/networkprompt.bat",
+        "floppy/passwordchange.bat",
+        "floppy/powerconfig.bat",
+        "floppy/uac-disable.bat",
+        "floppy/upgrade-wua.bat",
+        "floppy/win7x64-enterprise/Autounattend.xml",
+        "floppy/zz-start-sshd.cmd"
+      ],
+      "generation": 1,
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "sha1",
+      "iso_url": "{{ user `iso_url` }}",
+      "ram_size": 4096,
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "type": "hyperv-iso",
+      "vm_name": "win7x64-enterprise",
+      "winrm_password": "labview===123",
+      "winrm_timeout": "10000s",
+      "winrm_username": "lvuser"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "script/zchoco.bat",
+      "destination": "C:\\zchoco.bat"
+    },
+    {
+      "type": "file",
+      "source": "script/runBoxstarterSetup.bat",
+      "destination": "C:\\runBoxstarterSetup.bat"
+    },
+    {
+      "type": "file",
+      "source": "script/defaultIE.bat",
+      "destination": "C:\\defaultIE.bat"
+    },
+    {
+      "scripts": [        
+        "script/installChoco.ps1"
+      ],
+      "type": "powershell",
+      "elevated_user": "lvuser",
+      "elevated_password": "labview===123" 
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "scripts": [
+        "script/Join-AmerDomain.ps1"
+      ],
+      "type": "powershell"
+    },
+    {
+      "type": "windows-restart"
+    }
+  ],
+  "variables": {
+    "disk_size": "40960",
+    "headless": "false",
+    "iso_checksum": "998aef4d2201f10685afd438664a529aa5ead72d",
+    "iso_url": "G:\\packer\\Infrastructure\\packer\\iso\\Win7SP1_SlipStream.iso",
+    "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+    "update": "true",
+    "version": "1.0.4",
+    "cm": "salt",
+    "cm_version": ""
+  }
+}

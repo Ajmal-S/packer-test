@@ -1,0 +1,5 @@
+Set-ExecutionPolicyUnrestricted.bat
+Join-AmerDomain.ps1
+Install-NET462update.ps1
+Add-ToAdministratorsGroup.bat
+Set-AutoLogin.bat

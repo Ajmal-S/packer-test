@@ -1,0 +1,121 @@
+{
+  "builders": [
+    {
+      "communicator": "winrm",
+      "cpu": 2,
+      "disk_size": "{{user `disk_size`}}",
+      "floppy_files": [
+        "floppy/00-run-all-scripts.cmd",
+        "floppy/_packer_config.cmd",
+        "floppy/_post_update_install.bat",
+        "floppy/disablewinupdate.bat",
+        "floppy/fixnetwork.ps1",
+        "floppy/install-winrm_win10.cmd",
+        "floppy/networkprompt.bat",
+        "floppy/passwordchange.bat",
+        "floppy/powerconfig.bat",
+        "floppy/boxstarter.ps1",
+        "floppy/package.ps1",
+        "floppy/Test-Command.ps1",
+        "floppy/upgrade-wua.bat",
+        "floppy/win10x64-enterprise/Autounattend.xml",
+        "floppy/zz-start-sshd.cmd"
+      ],
+      "generation": 1,
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "md5",
+      "iso_url": "{{ user `iso_url` }}",
+      "ram_size": 4096,
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "type": "hyperv-iso",
+      "vm_name": "win10x64-enterprise",
+      "winrm_password": "labview===123",
+      "winrm_timeout": "10000s",
+      "winrm_username": "lvuser",
+      "winrm_insecure": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "script/zchoco.bat",
+      "destination": "C:\\zchoco.bat"
+    },
+    {
+      "type": "file",
+      "source": "script/runBoxstarterSetup.bat",
+      "destination": "C:\\runBoxstarterSetup.bat"
+    },
+    {
+      "scripts": [        
+        "script/installChoco.ps1"
+      ],
+      "type": "powershell",
+      "elevated_user": "lvuser",
+      "elevated_password": "labview===123" 
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "scripts": [        
+        "script/installDotNet.ps1"
+      ],
+      "type": "powershell",
+      "elevated_user": "lvuser",
+      "elevated_password": "labview===123" 
+    },
+    {
+      "scripts": [        
+        "script/installVStudio.ps1"
+      ],
+      "type": "powershell",
+      "elevated_user": "lvuser",
+      "elevated_password": "labview===123" 
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "destination": "/serverspectest",
+      "source": "./serverspectest",
+      "type": "file"
+    },
+    {
+      "scripts": [        
+        "script/installRuby.ps1"
+      ],
+      "type": "powershell",
+      "elevated_user": "lvuser",
+      "elevated_password": "labview===123" 
+    },
+    {
+      "scripts": [        
+        "script/installRuby-Update.ps1"
+      ],
+      "type": "powershell",
+      "elevated_user": "lvuser",
+      "elevated_password": "labview===123" 
+    },
+    {
+      "scripts": [
+        "script/Join-AmerDomain.ps1"
+      ],
+      "type": "powershell"
+    },
+    {
+      "type": "windows-restart"
+    }
+  ],
+  "variables": {
+    "disk_size": "40960",
+    "headless": "false",
+    "iso_checksum": "a67722adfaf209c72eacb3ab910ee65e",
+    "iso_url": "G:\\packer\\Infrastructure\\packer\\iso\\en_windows_10_enterprise_x64_dvd_6851151.iso",
+    "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+    "update": "true",
+    "version": "1.0.4",
+    "cm": "salt",
+    "cm_version": ""
+  }
+}

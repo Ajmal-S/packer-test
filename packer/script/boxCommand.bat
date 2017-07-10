@@ -1,0 +1,1 @@
+START http://boxstarter.org/package/nr/url?https://gist.githubusercontent.com/Ajmal-S/ad2ebd3b66d0bbb26840a2bee6a3baf8/raw/a0e992a4df2459f5bfd97762d7d8a22cea731e7e/boxstartersetupsimple.txt
